@@ -6,7 +6,7 @@ import { motion, type PanInfo } from "framer-motion";
 import {
   Bell,
   Eye,
-  Home,
+  Home as HomeIcon,
   LogOut,
   Plus,
   Search,
@@ -43,8 +43,7 @@ const fontMap: Record<FontKey, string> = {
     'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif',
   serif: 'Georgia, "Times New Roman", "Noto Serif KR", serif',
   mono: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace',
-  bold:
-    'Arial Black, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Noto Sans KR", sans-serif',
+  bold: 'Arial Black, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Noto Sans KR", sans-serif',
   narrow:
     'Arial Narrow, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Noto Sans KR", sans-serif',
 };
@@ -307,7 +306,7 @@ export default function Home() {
   useEffect(() => {
     window.localStorage.setItem(
       storageKey,
-      JSON.stringify({ nickname, sections, buckets })
+      JSON.stringify({ nickname, sections, buckets }),
     );
   }, [nickname, sections, buckets]);
 
@@ -341,7 +340,8 @@ export default function Home() {
     if (!title) return;
 
     const fontOptions: FontKey[] = ["clean", "serif", "mono", "bold", "narrow"];
-    const sectionId = activeSection === "all" ? sections[0]?.id ?? "life" : activeSection;
+    const sectionId =
+      activeSection === "all" ? (sections[0]?.id ?? "life") : activeSection;
     const item: Bucket = {
       id: crypto.randomUUID(),
       sectionId,
@@ -363,13 +363,17 @@ export default function Home() {
 
   const updateBucket = (id: string, patch: Partial<Bucket>) => {
     setBuckets((prev) =>
-      prev.map((bucket) => (bucket.id === id ? { ...bucket, ...patch } : bucket))
+      prev.map((bucket) =>
+        bucket.id === id ? { ...bucket, ...patch } : bucket,
+      ),
     );
   };
 
   const updateSection = (id: string, patch: Partial<Section>) => {
     setSections((prev) =>
-      prev.map((section) => (section.id === id ? { ...section, ...patch } : section))
+      prev.map((section) =>
+        section.id === id ? { ...section, ...patch } : section,
+      ),
     );
   };
 
@@ -389,12 +393,20 @@ export default function Home() {
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
 
-    const nextX = Math.min(Math.max(bucket.x + info.offset.x, 8), rect.width - 80);
-    const nextY = Math.min(Math.max(bucket.y + info.offset.y, 8), rect.height - 220);
+    const nextX = Math.min(
+      Math.max(bucket.x + info.offset.x, 8),
+      rect.width - 80,
+    );
+    const nextY = Math.min(
+      Math.max(bucket.y + info.offset.y, 8),
+      rect.height - 220,
+    );
     updateBucket(bucket.id, { x: nextX, y: nextY });
   };
 
-  const activeSectionData = sections.find((section) => section.id === activeSection);
+  const activeSectionData = sections.find(
+    (section) => section.id === activeSection,
+  );
 
   return (
     <main className="appShell">
@@ -413,7 +425,11 @@ export default function Home() {
         </button>
 
         <nav className="sideNav">
-          <SideItem active icon={<Home size={18} />} label="라이프 캔버스" />
+          <SideItem
+            active
+            icon={<HomeIcon size={18} />}
+            label="라이프 캔버스"
+          />
           <SideItem icon={<Search size={18} />} label="탐색" />
           <SideItem icon={<Eye size={18} />} label="구경하기" />
           <SideItem icon={<User size={18} />} label="내 프로필" />
@@ -424,7 +440,11 @@ export default function Home() {
 
         <div className="sidebarHeader">
           <span>내 섹션</span>
-          <button className="iconButton" onClick={addSection} aria-label="섹션 추가">
+          <button
+            className="iconButton"
+            onClick={addSection}
+            aria-label="섹션 추가"
+          >
             <Plus size={18} />
           </button>
         </div>
@@ -447,11 +467,17 @@ export default function Home() {
               onClick={() => setActiveSection(section.id)}
             >
               <span className="sectionName">
-                <span className="sectionDot" style={{ backgroundColor: section.color }} />
+                <span
+                  className="sectionDot"
+                  style={{ backgroundColor: section.color }}
+                />
                 {section.name}
               </span>
               <span className="sectionCount">
-                {buckets.filter((bucket) => bucket.sectionId === section.id).length}
+                {
+                  buckets.filter((bucket) => bucket.sectionId === section.id)
+                    .length
+                }
               </span>
             </button>
           ))}
@@ -463,7 +489,9 @@ export default function Home() {
               type="checkbox"
               checked={activeSectionData.isPublic}
               onChange={(event) =>
-                updateSection(activeSectionData.id, { isPublic: event.target.checked })
+                updateSection(activeSectionData.id, {
+                  isPublic: event.target.checked,
+                })
               }
             />
             현재 섹션 공개
@@ -482,7 +510,9 @@ export default function Home() {
         <header className="topbar">
           <div>
             <p className="greeting">안녕하세요, {nickname}님</p>
-            <p className="subGreeting">글씨 자체를 자유롭게 띄우고 꾸미는 버킷 캔버스</p>
+            <p className="subGreeting">
+              글씨 자체를 자유롭게 띄우고 꾸미는 버킷 캔버스
+            </p>
           </div>
 
           <div className="topActions">
@@ -506,13 +536,22 @@ export default function Home() {
             <button
               key={section.id}
               className={`tabButton ${activeSection === section.id ? "tabButtonActive" : ""}`}
-              style={activeSection === section.id ? { borderBottomColor: section.color, color: section.color } : undefined}
+              style={
+                activeSection === section.id
+                  ? { borderBottomColor: section.color, color: section.color }
+                  : undefined
+              }
               onClick={() => setActiveSection(section.id)}
             >
               {section.name}
             </button>
           ))}
-          <button className="iconButton" onClick={() => document.querySelector<HTMLInputElement>(".sectionInput")?.focus()}>
+          <button
+            className="iconButton"
+            onClick={() =>
+              document.querySelector<HTMLInputElement>(".sectionInput")?.focus()
+            }
+          >
             <Plus size={18} />
           </button>
         </div>
@@ -534,7 +573,9 @@ export default function Home() {
         </div>
 
         <div className="canvasWrap" ref={canvasRef}>
-          <div className="canvasHint">Double click to complete · Drag to move</div>
+          <div className="canvasHint">
+            Double click to complete · Drag to move
+          </div>
 
           <div className="toolPanel" aria-label="편집 도구">
             <button className="toolButton">↖</button>
@@ -559,7 +600,11 @@ export default function Home() {
                 className="floatingText"
                 animate={{
                   y: [0, -7, 0, 5, 0],
-                  rotate: [bucket.rotate, bucket.rotate + (index % 2 === 0 ? -0.7 : 0.7), bucket.rotate],
+                  rotate: [
+                    bucket.rotate,
+                    bucket.rotate + (index % 2 === 0 ? -0.7 : 0.7),
+                    bucket.rotate,
+                  ],
                 }}
                 transition={{
                   duration: 5.2 + index * 0.22,
@@ -617,13 +662,19 @@ export default function Home() {
               <input
                 className="editTitle"
                 value={selectedBucket.title}
-                onChange={(event) => updateBucket(selectedBucket.id, { title: event.target.value })}
+                onChange={(event) =>
+                  updateBucket(selectedBucket.id, { title: event.target.value })
+                }
               />
 
               <select
                 className="select"
                 value={selectedBucket.font}
-                onChange={(event) => updateBucket(selectedBucket.id, { font: event.target.value as FontKey })}
+                onChange={(event) =>
+                  updateBucket(selectedBucket.id, {
+                    font: event.target.value as FontKey,
+                  })
+                }
               >
                 {(Object.keys(fontMap) as FontKey[]).map((font) => (
                   <option key={font} value={font}>
@@ -639,7 +690,11 @@ export default function Home() {
                   min={16}
                   max={58}
                   value={selectedBucket.fontSize}
-                  onChange={(event) => updateBucket(selectedBucket.id, { fontSize: Number(event.target.value) })}
+                  onChange={(event) =>
+                    updateBucket(selectedBucket.id, {
+                      fontSize: Number(event.target.value),
+                    })
+                  }
                 />
               </label>
 
@@ -651,7 +706,11 @@ export default function Home() {
                   max={900}
                   step={100}
                   value={selectedBucket.fontWeight}
-                  onChange={(event) => updateBucket(selectedBucket.id, { fontWeight: Number(event.target.value) })}
+                  onChange={(event) =>
+                    updateBucket(selectedBucket.id, {
+                      fontWeight: Number(event.target.value),
+                    })
+                  }
                 />
               </label>
 
@@ -667,11 +726,18 @@ export default function Home() {
                 ))}
               </div>
 
-              <button className="smallButton" onClick={() => toggleDone(selectedBucket)}>
+              <button
+                className="smallButton"
+                onClick={() => toggleDone(selectedBucket)}
+              >
                 {selectedBucket.done ? "다시 띄우기" : "완료"}
               </button>
 
-              <button className="trashButton" onClick={() => deleteBucket(selectedBucket.id)} aria-label="삭제">
+              <button
+                className="trashButton"
+                onClick={() => deleteBucket(selectedBucket.id)}
+                aria-label="삭제"
+              >
                 <Trash2 size={16} />
               </button>
             </div>
@@ -682,7 +748,15 @@ export default function Home() {
   );
 }
 
-function SideItem({ icon, label, active = false }: { icon: ReactNode; label: string; active?: boolean }) {
+function SideItem({
+  icon,
+  label,
+  active = false,
+}: {
+  icon: ReactNode;
+  label: string;
+  active?: boolean;
+}) {
   return (
     <button className={`sideItem ${active ? "sideItemActive" : ""}`}>
       {icon}
